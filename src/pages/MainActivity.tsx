@@ -8,18 +8,16 @@ import WordCardsContainer from '../components/word-card/WordCardsContainer'
 import MyDrawer from '../components/MyDrawer'
 import MyEditor from '../components/MyEditor'
 
-import { bindActionCreators, Dispatch, AnyAction } from 'redux'
-import { connect } from 'react-redux'
-import { AppState } from '../redux/reducers'
-import { setCardVisible, setEditMode, setDrawerVisible } from '../redux/actions'
+import { useRecoilState } from 'recoil'
+import { editModeState, drawerVisibleState } from '../states/app-state'
+import { cardVisibleState } from '../states/word-card-state'
 
 import './MainActivity.css'
 
-type MainActivityProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
-
-const MainActivity: React.FC<MainActivityProps> = props => {
-  const { cardVisible, editMode } = props
-  const { setCardVisible, setEditMode, setDrawerVisible } = props
+const MainActivity: React.FC = props => {
+  const [editMode, setEditMode] = useRecoilState(editModeState)
+  const [cardVisible, setCardVisible] = useRecoilState(cardVisibleState)
+  const [drawerVisible, setDrawerVisible] = useRecoilState(drawerVisibleState)
 
   const toggleEditMode = () => {
     setEditMode(!editMode)
@@ -47,20 +45,4 @@ const MainActivity: React.FC<MainActivityProps> = props => {
   )
 }
 
-const mapStateToProps = (state: AppState) => {
-  return {
-    cardVisible: state.wordCardState.cardVisible,
-    editMode: state.viewState.editMode,
-  }
-}
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => bindActionCreators({
-  setCardVisible,
-  setEditMode,
-  setDrawerVisible
-}, dispatch)
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MainActivity)
+export default MainActivity

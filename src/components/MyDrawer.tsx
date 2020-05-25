@@ -8,10 +8,8 @@ import Divider from '@material-ui/core/Divider'
 import SettingsIcon from '@material-ui/icons/Settings'
 import { makeStyles } from '@material-ui/styles'
 
-import { Dispatch, AnyAction, bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
-import { AppState } from '../redux/reducers'
-import { setPage, setDrawerVisible } from '../redux/actions'
+import { useRecoilState } from 'recoil'
+import { drawerVisibleState, pageState } from '../states/app-state'
 
 import Page from '../pages/page'
 
@@ -21,11 +19,9 @@ const useStyles = makeStyles({
     }
 })
 
-type MyDrawerProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
-
-const MyDrawer: React.FC<MyDrawerProps> = (props) => {
-    const { visible } = props
-    const { setDrawerVisible, setPage } = props
+const MyDrawer: React.FC = props => {
+    const [drawerVisible, setDrawerVisible] = useRecoilState(drawerVisibleState)
+    const [page, setPage] = useRecoilState(pageState)
     const classes = useStyles()
 
     const renderDrawerContent = () => (
@@ -44,24 +40,10 @@ const MyDrawer: React.FC<MyDrawerProps> = (props) => {
     )
 
     return (
-        <Drawer anchor='left' open={visible} onClose={() => setDrawerVisible(false)}>
+        <Drawer anchor='left' open={drawerVisible} onClose={() => setDrawerVisible(false)}>
             {renderDrawerContent()}
         </Drawer >
     )
 }
 
-const mapStateToProps = (state: AppState) => {
-    return {
-        visible: state.viewState.drawerVisible
-    }
-}
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => bindActionCreators({
-    setPage,
-    setDrawerVisible
-}, dispatch)
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MyDrawer)
+export default MyDrawer

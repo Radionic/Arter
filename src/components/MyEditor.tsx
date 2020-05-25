@@ -1,14 +1,13 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import { makeStyles } from '@material-ui/core'
 
 import { createEditor, Node } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
 import { withMyEditor, renderMyElement } from '../plugin/editor/with-my-editor'
 
-import { bindActionCreators, Dispatch, AnyAction } from 'redux'
-import { connect } from 'react-redux'
-import { AppState } from '../redux/reducers'
-import { setWord, setCardVisible } from '../redux/actions'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { editModeState } from '../states/app-state'
+import { spellcheckState, paddingStyleState } from '../states/preference-state'
+import { cardVisibleState, wordState } from '../states/word-card-state'
 
 import Word from '../models/word'
 import WordRequest from '../network/word-request'
@@ -17,23 +16,15 @@ import EditorHelperFunctions from '../plugin/editor/editor-helper-functions'
 
 import { Plugins } from '@capacitor/core'
 
-type MyEditorProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>
-
-const useStyle = makeStyles({
-    editor: (props: MyEditorProps) => ({
-        padding: `${props.topBottomPadding}px ${props.leftRightPadding}px ${props.topBottomPadding}px ${props.leftRightPadding}px`,
-        userSelect: 'text'
-    })
-})
-
 const { Storage } = Plugins
 
-const MyEditor: React.FC<MyEditorProps> = (props) => {
-    const { cardVisible, editMode } = props
-    const { setCardVisible } = props
+const MyEditor: React.FC = props => {
+    const [cardVisible, setCardVisible] = useRecoilState(cardVisibleState)
+    const [editMode, setEditMode] = useRecoilState(editModeState)
+    const [spellcheck, setSpellcheck] = useRecoilState(spellcheckState)
+    const [word, setWord] = useRecoilState(wordState)
+    const paddingStyle = useRecoilValue(paddingStyleState)
 
-    const { spellcheck } = props
-    const { setWord } = props
     const [value, setValue] = useState<Node[]>([])
 
     useEffect(() => {
@@ -53,8 +44,6 @@ const MyEditor: React.FC<MyEditorProps> = (props) => {
         () => withMyEditor(withReact(createEditor())),
         []
     )
-
-    const classes = useStyle(props)
 
     const handleClick = () => {
         if (editMode) return
@@ -82,7 +71,7 @@ const MyEditor: React.FC<MyEditorProps> = (props) => {
 
     return (
         <div
-            onClick={handleClick}> { /* cannot listen to most of the DOM events when 'readOnly' is true, so we have to wrap the <Editable> with <div> */ }
+            onClick={handleClick}> { /* cannot listen to most of the DOM events when 'readOnly' is true, so we have to wrap the <Editable> with <div> */}
             <Slate editor={editor} value={value} onChange={(value) => {
                 setValue(value)
                 Storage.set({
@@ -96,28 +85,14 @@ const MyEditor: React.FC<MyEditorProps> = (props) => {
                     spellCheck={spellcheck}
                     readOnly={!editMode}
                     onDoubleClick={handleDoubleClick}
-                    className={classes.editor} />
+                    style={{
+                        padding: paddingStyle,
+                        userSelect: 'text'
+                    }}
+                />
             </Slate>
         </div >
     )
 }
 
-const mapStateToProps = (state: AppState) => {
-    return {
-        cardVisible: state.wordCardState.cardVisible,
-        editMode: state.viewState.editMode,
-        leftRightPadding: state.preferenceState.leftRightPadding,
-        topBottomPadding: state.preferenceState.topBottomPadding,
-        spellcheck: state.preferenceState.spellcheck
-    }
-}
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => bindActionCreators({
-    setWord,
-    setCardVisible
-}, dispatch)
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(MyEditor)
+export default MyEditor

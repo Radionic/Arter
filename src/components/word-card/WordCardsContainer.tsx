@@ -4,26 +4,25 @@ import { Swipeable, EventData } from 'react-swipeable'
 import WordCard from './WordCard'
 import WordCardLoading from './WordCardLoading'
 
-import { bindActionCreators, Dispatch, AnyAction } from 'redux'
-import { connect } from 'react-redux'
-import { AppState } from '../../redux/reducers'
-import { setCardVisible } from '../../redux/actions'
+import { useRecoilState } from 'recoil'
+import { cardVisibleState, wordState, examplesState } from '../../states/word-card-state'
 
 import './WordCardsContainer.css'
 
-const WordCardsContainer: React.FC<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>> = (props) => {
+const WordCardsContainer: React.FC = props => {
     const [transformX, setTransformX] = useState<number>(0)
 
-    const { setCardVisible } = props
-    const { word, cardVisible, meaningExamples } = props
+    const [cardVisible, setCardVisible] = useRecoilState(cardVisibleState)
+    const [word, swtWord] = useRecoilState(wordState)
+    const [examples, setExamples] = useRecoilState(examplesState)
 
     const handleSwipeLeft = (e: EventData) => {
-        if (!word || meaningExamples || transformX === (word!.meanings.size - 1) * 100) return
+        if (!word || examples || transformX === (word!.meanings.size - 1) * 100) return
         setTransformX(transformX + 100)
     }
 
     const handleSwipeRight = (e: EventData) => {
-        if (!word || meaningExamples || transformX === 0) return
+        if (!word || examples || transformX === 0) return
         setTransformX(transformX - 100)
     }
 
@@ -33,7 +32,7 @@ const WordCardsContainer: React.FC<ReturnType<typeof mapStateToProps> & ReturnTy
         const wordCards = []
         let i = 0
         for (let [key, value] of word!.meanings) {
-            wordCards.push(<WordCard meaningExamples={meaningExamples} POS={key} visible={transformX === i} />)
+            wordCards.push(<WordCard visible={transformX === i} />)
             i += 100
         }
         return wordCards
@@ -48,19 +47,4 @@ const WordCardsContainer: React.FC<ReturnType<typeof mapStateToProps> & ReturnTy
     )
 }
 
-const mapStateToProps = (state: AppState) => {
-    return {
-        word: state.wordCardState.word,
-        cardVisible: state.wordCardState.cardVisible,
-        meaningExamples: state.wordCardState.meaningExamples,
-    }
-}
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => bindActionCreators({
-    setCardVisible
-}, dispatch)
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(WordCardsContainer)
+export default WordCardsContainer

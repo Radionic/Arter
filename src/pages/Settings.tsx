@@ -3,19 +3,19 @@ import { AppBar, Toolbar, IconButton } from '@material-ui/core'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import Divider from '@material-ui/core/Divider'
 
-import { bindActionCreators, Dispatch, AnyAction } from 'redux'
-import { connect } from 'react-redux'
-import { AppState } from '../redux/reducers'
-import { setPage, setLeftRightPadding, setTopBottomPadding, setSpellcheck } from '../redux/actions'
+import { useRecoilState } from 'recoil'
+import { pageState } from '../states/app-state'
+import { paddingState, spellcheckState } from '../states/preference-state'
 
 import SwitchOption from '../components/settings/SwitchOption'
 import SliderOption from '../components/settings/SliderOption'
 
 import Page from './page'
 
-const Settings: React.FC<ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>> = (props) => {
-    const { leftRightPadding, topBottomPadding, spellcheck } = props
-    const { setLeftRightPadding, setTopBottomPadding, setSpellcheck, setPage } = props
+const Settings: React.FC = props => {
+    const [page, setPage] = useRecoilState(pageState)
+    const [padding, setPadding] = useRecoilState(paddingState)
+    const [spellcheck, setSpellcheck] = useRecoilState(spellcheckState)
 
     return (
         <>
@@ -27,31 +27,26 @@ const Settings: React.FC<ReturnType<typeof mapStateToProps> & ReturnType<typeof 
                 </Toolbar>
             </AppBar>
 
-            <SwitchOption text='Spell Check' checked={spellcheck} onChange={(v: boolean) => setSpellcheck(v)} />
+            <SwitchOption text='Spell Check' checked={spellcheck} onChange={setSpellcheck} />
+
             <Divider />
-            <SliderOption min={0} max={48} text='Left and Right Padding' value={leftRightPadding} onChange={(v: number) => setLeftRightPadding(v)} />
-            <SliderOption min={0} max={48} text='Top and Bottom Padding' value={topBottomPadding} onChange={(v: number) => setTopBottomPadding(v)} />
+
+            <SliderOption min={0} max={48} text='Left and Right Padding'
+                value={padding.leftRight}
+                onChange={(v: number) => setPadding({
+                    ...padding,
+                    leftRight: v
+                })} />
+
+            <SliderOption min={0} max={48} text='Top and Bottom Padding'
+                value={padding.topBottom}
+                onChange={(v: number) => setPadding({
+                    ...padding,
+                    topBottom: v
+                })} />
         </>
     )
 }
 
-const mapStateToProps = (state: AppState) => {
-    return {
-        leftRightPadding: state.preferenceState.leftRightPadding,
-        topBottomPadding: state.preferenceState.topBottomPadding,
-        spellcheck: state.preferenceState.spellcheck
-    }
-}
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => bindActionCreators({
-    setPage,
-    setLeftRightPadding,
-    setTopBottomPadding,
-    setSpellcheck
-}, dispatch)
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(Settings)
+export default Settings
 

@@ -8,16 +8,13 @@ import VolumeUpIcon from '@material-ui/icons/VolumeUp'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { bindActionCreators, Dispatch, AnyAction } from 'redux'
-import { connect } from 'react-redux'
-import { AppState } from '../../redux/reducers'
-import { setMeaningExamples } from '../../redux/actions'
+import { useRecoilState } from 'recoil'
+import { examplesState, POSState } from '../../states/word-card-state'
 
 import WordCardExampels from './WordCardExamples'
+import { wordState } from '../../states/word-card-state'
 
 export type CardProps = {
-    POS: string | null,
-    meaningExamples: string | null,
     visible: boolean
 }
 
@@ -59,15 +56,17 @@ const useStyles = makeStyles({
     }
 })
 
-const WordCard: React.FC<CardProps & ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>> = (props) => {
+const WordCard: React.FC<CardProps> = props => {
     const classes = useStyles()
 
-    const { word, POS, meaningExamples, visible } = props
-    const { setMeaningExamples } = props
+    const { visible } = props
+    const [word, setWord] = useRecoilState(wordState)
+    const [POS, setPOS] = useRecoilState(POSState)
+    const [examples, setExamples] = useRecoilState(examplesState)
 
     if (!word || !POS) return null
 
-    if (meaningExamples && word.translatedExamples.get(meaningExamples)) return (<WordCardExampels word={word} meaningExamples={meaningExamples} POS={POS} handleBack={() => setMeaningExamples(null)} />)
+    if (examples && word.translatedExamples.get(examples)) return (<WordCardExampels word={word} meaningExamples={examples} POS={POS} handleBack={() => setExamples(null)} />)
 
     const playVoice = (isUK: boolean) => {
         const link = word.pronunciation.get(POS)![isUK ? 0 : 1]
@@ -94,25 +93,12 @@ const WordCard: React.FC<CardProps & ReturnType<typeof mapStateToProps> & Return
                         <Typography variant='body2' className={classes.voiceBtnText}>US</Typography>
                     </div>
                 </Grid>
-                {word!.meanings.get(POS)!.map((meaning, i) => {
-                    return <Typography variant='body2' onClick={() => setMeaningExamples(meaning)}>{i + 1 + '. ' + meaning}</Typography>
+                {word!.meanings.get(POS)!.map((meaning: string, i: number) => {
+                    return <Typography variant='body2' onClick={() => setExamples(meaning)}>{i + 1 + '. ' + meaning}</Typography>
                 })}
             </CardContent>
         </Card>
     )
 }
 
-const mapStateToProps = (state: AppState) => {
-    return {
-        word: state.wordCardState.word,
-    }
-}
-
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => bindActionCreators({
-    setMeaningExamples
-}, dispatch)
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(WordCard)
+export default WordCard
