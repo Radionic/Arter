@@ -9,13 +9,13 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { useRecoilState } from 'recoil'
-import { examplesState, POSState } from '../../states/word-card-state'
+import { wordState, examplesState } from '../../states/word-card-state'
 
 import WordCardExampels from './WordCardExamples'
-import { wordState } from '../../states/word-card-state'
 
 export type CardProps = {
-    visible: boolean
+    visible: boolean,
+    POS: string
 }
 
 const useStyles = makeStyles({
@@ -59,9 +59,8 @@ const useStyles = makeStyles({
 const WordCard: React.FC<CardProps> = props => {
     const classes = useStyles()
 
-    const { visible } = props
+    const { visible, POS } = props
     const [word, setWord] = useRecoilState(wordState)
-    const [POS, setPOS] = useRecoilState(POSState)
     const [examples, setExamples] = useRecoilState(examplesState)
 
     if (!word || !POS) return null

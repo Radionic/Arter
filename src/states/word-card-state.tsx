@@ -14,8 +14,3 @@ export const examplesState = atom({
     key: 'examples',
     default: null
 })
-
-export const POSState = atom({
-    key: 'POS',
-    default: null
-})

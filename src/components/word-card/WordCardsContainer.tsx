@@ -32,7 +32,7 @@ const WordCardsContainer: React.FC = props => {
         const wordCards = []
         let i = 0
         for (let [key, value] of word!.meanings) {
-            wordCards.push(<WordCard visible={transformX === i} />)
+            wordCards.push(<WordCard visible={transformX === i} POS={key}/>)
             i += 100
         }
         return wordCards
