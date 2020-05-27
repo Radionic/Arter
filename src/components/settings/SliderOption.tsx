@@ -1,28 +1,8 @@
 import React from 'react'
 import Typography from '@material-ui/core/Typography'
 import Slider from '@material-ui/core/Slider'
-import { makeStyles } from '@material-ui/styles'
 
-const useStyles = makeStyles({
-    root: {
-        padding: '10px 20px 10px 20px'
-    },
-    textContainer: {
-        display: 'flex'
-    },
-    text: {
-        display: 'inline-block',
-        fontWeight: 'normal'
-    },
-    text2: {
-        display: 'inline-block',
-        alignSelf: 'center',
-        marginLeft: 'auto'
-    },
-    slider: {
-        padding: '0px'
-    }
-})
+import useStyles from '../../styles/settings/slider-option-style'
 
 const SliderOption: React.FC<{ text: string, value: number, onChange: Function, [key: string]: any }> = ({ text, value, onChange, ...rest }) => {
     const classes = useStyles()

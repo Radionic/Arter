@@ -1,21 +1,8 @@
 import React from 'react'
 import Switch from '@material-ui/core/Switch'
 import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/styles'
 
-const useStyles = makeStyles({
-    root: {
-        display: 'flex',
-        alignItems: 'center',
-        padding: '10px 20px 10px 20px'
-    },
-    text: {
-        fontWeight: 'normal'
-    },
-    switch: {
-        marginLeft: 'auto'
-    }
-})
+import useStyles from '../../styles/settings/switch-option-style'
 
 const SwitchOption: React.FC<{ text: string, checked: boolean, onChange: Function }> = ({ text, checked, onChange }) => {
     const classes = useStyles()

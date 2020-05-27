@@ -6,18 +6,13 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Divider from '@material-ui/core/Divider'
 import SettingsIcon from '@material-ui/icons/Settings'
-import { makeStyles } from '@material-ui/styles'
 
 import { useRecoilState } from 'recoil'
 import { drawerVisibleState, pageState } from '../states/app-state'
 
-import Page from '../pages/page'
+import useStyles from '../styles/my-drawer-style'
 
-const useStyles = makeStyles({
-    drawer: {
-        width: '200px'
-    }
-})
+import Page from '../pages/page'
 
 const MyDrawer: React.FC = props => {
     const [drawerVisible, setDrawerVisible] = useRecoilState(drawerVisibleState)
