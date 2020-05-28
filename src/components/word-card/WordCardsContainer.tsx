@@ -14,7 +14,7 @@ const WordCardsContainer: React.FC = props => {
     const [transformX, setTransformX] = useState<number>(0)
 
     const [cardVisible, setCardVisible] = useRecoilState(cardVisibleState)
-    const [word, swtWord] = useRecoilState(wordState)
+    const [word, setWord] = useRecoilState(wordState)
     const [examples, setExamples] = useRecoilState(examplesState)
 
     const classes = useStyles()

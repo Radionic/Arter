@@ -1,10 +1,7 @@
-import { Editor, Transforms } from 'slate'
-import { ReactEditor } from 'slate-react'
-
 const getWord = (): string | null => {
     const selection = window.getSelection()
 
-    if (selection == null || selection.anchorNode == null || selection.anchorNode.textContent == null) return null
+    if (!selection || !selection.anchorNode || !selection.anchorNode.textContent) return null
 
     const para = selection.anchorNode.textContent,
         offset = selection.anchorOffset
@@ -25,11 +22,11 @@ const getWord = (): string | null => {
     return para.slice(left, right + offset)
 }
 
-const selectWord = (editor: ReactEditor): void => {
+const selectWord = (): Range | null => {
     // TODO: select words with typo e.g. without fullstop
     const selection = window.getSelection()
 
-    if (selection == null || selection.anchorNode == null || selection.anchorNode.textContent == null || !selection.isCollapsed) return
+    if (!selection || !selection.anchorNode || !selection.anchorNode.textContent || !selection.isCollapsed) return null
 
     const node = selection.anchorNode,
         para = node.textContent!,
@@ -55,14 +52,12 @@ const selectWord = (editor: ReactEditor): void => {
     selection.removeAllRanges()
     selection.addRange(domRange)
 
-    const range = ReactEditor.toSlateRange(editor, domRange)
-    Transforms.select(editor, range)
+    return domRange
 }
 
-const EditorHelperFunctions = {
-    ...Editor,
+const domEditor = {
     getWord,
     selectWord
 }
 
-export default EditorHelperFunctions
+export default domEditor

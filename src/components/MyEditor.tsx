@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react'
 
 import { createEditor, Node } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
-import { withMyEditor, renderMyElement } from '../plugin/editor/with-my-editor'
+import { withMyEditor, renderMyElement } from '../editor/with-my-editor'
 
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { editModeState } from '../states/app-state'
@@ -12,7 +12,7 @@ import { cardVisibleState, wordState } from '../states/word-card-state'
 import Word from '../models/word'
 import WordRequest from '../network/word-request'
 
-import EditorHelperFunctions from '../plugin/editor/editor-helper-functions'
+import domEditor from '../editor/dom-editor'
 
 import { Plugins } from '@capacitor/core'
 
@@ -54,14 +54,14 @@ const MyEditor: React.FC = props => {
     const handleDoubleClick = () => {
         if (editMode) return
 
-        const word = EditorHelperFunctions.getWord()
-        if (word) {
-            EditorHelperFunctions.selectWord(editor)
+        const word = domEditor.getWord()
+        const domRange = domEditor.selectWord()
+        if (word && domRange) {
             setWord(null)
             setCardVisible(true)
 
             new WordRequest(word).make().then((myWord: Word) => {
-                (editor as any).insertQuickMeaning(myWord)
+                editor.insertQuickMeaning(domRange, myWord, myWord.word)
                 setWord(myWord)
             }).catch((e) => {
 
