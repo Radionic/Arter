@@ -12,8 +12,6 @@ import { useRecoilState } from 'recoil'
 import { editModeState, drawerVisibleState } from '../states/app-state'
 import { cardVisibleState } from '../states/word-card-state'
 
-import './MainActivity.css'
-
 const MainActivity: React.FC = props => {
   const [editMode, setEditMode] = useRecoilState(editModeState)
   const [cardVisible, setCardVisible] = useRecoilState(cardVisibleState)
