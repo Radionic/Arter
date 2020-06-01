@@ -14,8 +14,8 @@ const WordCardsContainer: React.FC = props => {
     const [transformX, setTransformX] = useState<number>(0)
 
     const [cardVisible, setCardVisible] = useRecoilState(cardVisibleState)
-    const [word, setWord] = useRecoilState(wordState)
-    const [examples, setExamples] = useRecoilState(examplesState)
+    const [word, ] = useRecoilState(wordState)
+    const [examples, ] = useRecoilState(examplesState)
 
     const classes = useStyles()
 
@@ -34,7 +34,7 @@ const WordCardsContainer: React.FC = props => {
 
         const wordCards = []
         let i = 0
-        for (let [key, value] of word!.meanings) {
+        for (let [key, ] of word!.meanings) {
             wordCards.push(<WordCard visible={transformX === i} POS={key} />)
             i += 100
         }

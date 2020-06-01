@@ -20,9 +20,9 @@ const { Storage } = Plugins
 
 const MyEditor: React.FC = props => {
     const [cardVisible, setCardVisible] = useRecoilState(cardVisibleState)
-    const [editMode, setEditMode] = useRecoilState(editModeState)
-    const [spellcheck, setSpellcheck] = useRecoilState(spellcheckState)
-    const [word, setWord] = useRecoilState(wordState)
+    const [editMode, ] = useRecoilState(editModeState)
+    const [spellcheck, ] = useRecoilState(spellcheckState)
+    const [, setWord] = useRecoilState(wordState)
     const paddingStyle = useRecoilValue(paddingStyleState)
 
     const [value, setValue] = useState<Node[]>([])

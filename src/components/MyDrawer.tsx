@@ -16,7 +16,7 @@ import Page from '../pages/page'
 
 const MyDrawer: React.FC = props => {
     const [drawerVisible, setDrawerVisible] = useRecoilState(drawerVisibleState)
-    const [page, setPage] = useRecoilState(pageState)
+    const [, setPage] = useRecoilState(pageState)
     const classes = useStyles()
 
     const renderDrawerContent = () => (

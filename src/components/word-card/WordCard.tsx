@@ -23,7 +23,7 @@ const WordCard: React.FC<CardProps> = props => {
     const classes = useStyles()
 
     const { visible, POS } = props
-    const [word, setWord] = useRecoilState(wordState)
+    const [word, ] = useRecoilState(wordState)
     const [examples, setExamples] = useRecoilState(examplesState)
 
     if (!word || !POS) return null

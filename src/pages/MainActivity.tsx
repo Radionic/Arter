@@ -15,7 +15,7 @@ import { cardVisibleState } from '../states/word-card-state'
 const MainActivity: React.FC = props => {
   const [editMode, setEditMode] = useRecoilState(editModeState)
   const [cardVisible, setCardVisible] = useRecoilState(cardVisibleState)
-  const [drawerVisible, setDrawerVisible] = useRecoilState(drawerVisibleState)
+  const [, setDrawerVisible] = useRecoilState(drawerVisibleState)
 
   const toggleEditMode = () => {
     setEditMode(!editMode)

@@ -13,7 +13,7 @@ import SliderOption from '../components/settings/SliderOption'
 import Page from './page'
 
 const Settings: React.FC = props => {
-    const [page, setPage] = useRecoilState(pageState)
+    const [, setPage] = useRecoilState(pageState)
     const [padding, setPadding] = useRecoilState(paddingState)
     const [spellcheck, setSpellcheck] = useRecoilState(spellcheckState)
 
