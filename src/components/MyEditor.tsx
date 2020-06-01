@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
 
 import { createEditor, Node } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
@@ -69,6 +69,8 @@ const MyEditor: React.FC = props => {
         }
     }
 
+    const memoRenderMyElement = useCallback(renderMyElement, [])
+
     return (
         <div
             onClick={handleClick}> { /* cannot listen to most of the DOM events when 'readOnly' is true, so we have to wrap the <Editable> with <div> */}
@@ -80,7 +82,7 @@ const MyEditor: React.FC = props => {
                 })
             }}>
                 <Editable
-                    renderElement={props => renderMyElement(props)}
+                    renderElement={memoRenderMyElement}
                     placeholder='Place the article here!'
                     spellCheck={spellcheck}
                     readOnly={!editMode}

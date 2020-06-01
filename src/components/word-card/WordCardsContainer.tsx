@@ -50,4 +50,4 @@ const WordCardsContainer: React.FC = props => {
     )
 }
 
-export default WordCardsContainer
+export default React.memo(WordCardsContainer)

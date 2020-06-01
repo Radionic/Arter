@@ -41,4 +41,4 @@ const MyDrawer: React.FC = props => {
     )
 }
 
-export default MyDrawer
+export default React.memo(MyDrawer)

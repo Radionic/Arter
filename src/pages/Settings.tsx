@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, ChangeEvent } from 'react'
 import { AppBar, Toolbar, IconButton } from '@material-ui/core'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import Divider from '@material-ui/core/Divider'
@@ -17,6 +17,18 @@ const Settings: React.FC = props => {
     const [padding, setPadding] = useRecoilState(paddingState)
     const [spellcheck, setSpellcheck] = useRecoilState(spellcheckState)
 
+    const handleSpellcheckChange = useCallback((e: ChangeEvent, checked: boolean) => setSpellcheck(checked), []) // it seems unnecessary to re-memorize the function when spellcheck state changes.
+
+    const handleLeftRightPaddingChange = useCallback((e: ChangeEvent<{}>, v: number | number[]) => setPadding({
+        ...padding,
+        leftRight: v
+    }), [padding.leftRight])
+
+    const handleTopBottomPaddingChange = useCallback((e: ChangeEvent<{}>, v: number | number[]) => setPadding({
+        ...padding,
+        topBottom: v
+    }), [padding.topBottom])
+
     return (
         <>
             <AppBar position='sticky'>
@@ -27,26 +39,21 @@ const Settings: React.FC = props => {
                 </Toolbar>
             </AppBar>
 
-            <SwitchOption text='Spell Check' checked={spellcheck} onChange={setSpellcheck} />
+            <SwitchOption text='Spell Check' checked={spellcheck} onChange={handleSpellcheckChange} />
 
             <Divider />
 
-            <SliderOption min={0} max={48} text='Left and Right Padding'
+            <SliderOption min={0} max={48} title='Left and Right Padding'
                 value={padding.leftRight}
-                onChange={(v: number) => setPadding({
-                    ...padding,
-                    leftRight: v
-                })} />
+                valueText={padding.leftRight + 'px'}
+                onChange={handleLeftRightPaddingChange} />
 
-            <SliderOption min={0} max={48} text='Top and Bottom Padding'
+            <SliderOption min={0} max={48} title='Top and Bottom Padding'
                 value={padding.topBottom}
-                onChange={(v: number) => setPadding({
-                    ...padding,
-                    topBottom: v
-                })} />
+                valueText={padding.topBottom + 'px'}
+                onChange={handleTopBottomPaddingChange} />
         </>
     )
 }
 
 export default Settings
-

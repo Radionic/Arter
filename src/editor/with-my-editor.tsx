@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import { ReactEditor, RenderElementProps } from 'slate-react'
 import { Transforms, Range } from 'slate'
