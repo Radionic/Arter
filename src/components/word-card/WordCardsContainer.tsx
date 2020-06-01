@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Swipeable, EventData } from 'react-swipeable'
 
 import WordCard from './WordCard'
@@ -18,6 +18,10 @@ const WordCardsContainer: React.FC = props => {
     const [examples, ] = useRecoilState(examplesState)
 
     const classes = useStyles()
+
+    useEffect(() => {
+        if (cardVisible && transformX != 0) setTransformX(0)
+    }, [cardVisible])
 
     const handleSwipeLeft = (e: EventData) => {
         if (!word || examples || transformX === (word!.meanings.size - 1) * 100) return

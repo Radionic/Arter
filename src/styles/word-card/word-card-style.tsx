@@ -7,11 +7,11 @@ const useStyles = makeStyles({
         margin: '0em 0.8rem 0em 0em',
         width: '100%',
         transition: 'opacity 0.5s',
-        opacity: '0.5'
-    },
-    wordCardVisible: {
-        pointerEvents: 'auto',
-        opacity: 1
+        opacity: '0.5',
+        '&.visible': {
+            pointerEvents: 'auto',
+            opacity: 1
+        }
     },
     header: {
         padding: '8px 16px 0px 16px !important'

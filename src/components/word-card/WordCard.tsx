@@ -42,7 +42,7 @@ const WordCard: React.FC<CardProps> = props => {
     }
 
     return (
-        <Card className={clsx(classes.wordCard, { [classes.wordCardVisible]: visible })}>
+        <Card className={clsx(classes.wordCard, { 'visible': visible })}>
             {renderCardHeader()}
             <CardContent className={classes.content}>
                 <Grid className={classes.voiceBtnsGrid} container direction='row' alignItems='center'>
