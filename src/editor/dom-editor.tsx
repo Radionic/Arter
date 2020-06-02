@@ -1,3 +1,4 @@
+// Get the string of a word in a paragraph through Selection object
 const getWord = (): string | null => {
     const selection = window.getSelection()
 
@@ -9,19 +10,23 @@ const getWord = (): string | null => {
     var left = para.slice(0, offset).search(/\w+$/),
         right = para.slice(offset).search(/\W/)
 
-    if (left === -1) {
-        // abc |def
+    if (left === -1) { // user clicks at the first character of the first word of a paragraph
         left = offset
     }
 
-    if (right === -1) {
-        // abc |d|e|f|
+    if (right === -1) { // punctuations or whitespace does not exist after a word or a QuickMeaning component is next to this word
         return para.slice(left)
     }
 
     return para.slice(left, right + offset)
 }
 
+/*
+* Normally, when user clicks at 
+* 1. the whitespace between two words, it will select the word in the left
+* 2. a character of a word, it will select the word containing that character
+* and return the Range object of the word
+*/
 const selectWord = (): Range | null => {
     // TODO: select words with typo e.g. without fullstop
     const selection = window.getSelection()
@@ -35,14 +40,12 @@ const selectWord = (): Range | null => {
     var left = para.slice(0, offset).search(/\w+$/),
         right = para.slice(offset).search(/\W/)
 
-    if (left === -1) {
-        // abc |def
+    if (left === -1) { // user clicks at the first character of the first word of a paragraph
         left = offset
     }
 
-    if (right === -1) {
-        // abc |d|e|f|
-        right = para.length - left - offset
+    if (right === -1) { // punctuations or whitespace does not exist after a word or a QuickMeaning component is next to this word
+        right = para.length - offset
     }
 
     const domRange = document.createRange()
