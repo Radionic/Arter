@@ -5,7 +5,7 @@ import Divider from '@material-ui/core/Divider'
 
 import { useRecoilState } from 'recoil'
 import { pageState } from '../states/app-state'
-import { paddingState, spellcheckState } from '../states/preference-state'
+import { paddingState, spellcheckState, autosaveState } from '../states/preference-state'
 
 import SwitchOption from '../components/settings/SwitchOption'
 import SliderOption from '../components/settings/SliderOption'
@@ -16,6 +16,7 @@ const Settings: React.FC = props => {
     const [, setPage] = useRecoilState(pageState)
     const [padding, setPadding] = useRecoilState(paddingState)
     const [spellcheck, setSpellcheck] = useRecoilState(spellcheckState)
+    const [autosave, setAutosave] = useRecoilState(autosaveState)
 
     const handleSpellcheckChange = useCallback((e: ChangeEvent, checked: boolean) => setSpellcheck(checked), []) // it seems unnecessary to re-memorize the function when spellcheck state changes.
 
@@ -29,6 +30,8 @@ const Settings: React.FC = props => {
         topBottom: v
     }), [padding.topBottom])
 
+    const handleAutosaveChange = useCallback((e: ChangeEvent, checked: boolean) => setAutosave(checked), [])
+
     return (
         <>
             <AppBar position='sticky'>
@@ -39,6 +42,8 @@ const Settings: React.FC = props => {
                 </Toolbar>
             </AppBar>
 
+            <SwitchOption text='Autosave' checked={autosave} onChange={handleAutosaveChange} />
+            
             <SwitchOption text='Spell Check' checked={spellcheck} onChange={handleSpellcheckChange} />
 
             <Divider />

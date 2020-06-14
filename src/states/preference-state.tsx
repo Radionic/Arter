@@ -20,3 +20,8 @@ export const spellcheckState = atom({
     key: 'spellcheck',
     default: false
 })
+
+export const autosaveState = atom({
+    key: 'autosave',
+    default: true
+})

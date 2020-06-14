@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react'
+import React, { useState, useMemo, useEffect, useCallback, useImperativeHandle, forwardRef } from 'react'
+import { useThrottleFn } from 'react-use'
 
 import { createEditor, Node } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
@@ -6,7 +7,7 @@ import { withMyEditor, renderMyElement } from '../editor/with-my-editor'
 
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { editModeState } from '../states/app-state'
-import { spellcheckState, paddingStyleState } from '../states/preference-state'
+import { spellcheckState, paddingStyleState, autosaveState } from '../states/preference-state'
 import { cardVisibleState, wordState } from '../states/word-card-state'
 
 import Word from '../models/word'
@@ -16,16 +17,38 @@ import domEditor from '../editor/dom-editor'
 
 import { Plugins } from '@capacitor/core'
 
+export interface MyEditorRef {
+    saveContent: () => void
+}
+
 const { Storage } = Plugins
 
-const MyEditor: React.FC = props => {
-    const [cardVisible, setCardVisible] = useRecoilState(cardVisibleState)
-    const [editMode, ] = useRecoilState(editModeState)
-    const [spellcheck, ] = useRecoilState(spellcheckState)
-    const [, setWord] = useRecoilState(wordState)
+const MyEditor = forwardRef((props, ref) => {
+    // app state
+    const [editMode,] = useRecoilState(editModeState)
+
+    // preference state
+    const [spellcheck,] = useRecoilState(spellcheckState)
+    const [autosave,] = useRecoilState(autosaveState)
     const paddingStyle = useRecoilValue(paddingStyleState)
 
+    // word card state
+    const [cardVisible, setCardVisible] = useRecoilState(cardVisibleState)
+    const [, setWord] = useRecoilState(wordState)
+
     const [value, setValue] = useState<Node[]>([])
+
+    const saveContent = (v?: Node[]) => {
+        const val = v ?? value
+        Storage.set({
+            key: 'content',
+            value: JSON.stringify(val)
+        })
+    }
+
+    useImperativeHandle(ref, () => ({
+        saveContent
+    }), [value])
 
     useEffect(() => {
         Storage.get({ key: 'content' }).then(contentStr => {
@@ -39,6 +62,10 @@ const MyEditor: React.FC = props => {
             }
         })
     }, [])
+
+    useThrottleFn((v) => {
+        if (autosave) saveContent(v)
+    }, 1000, [value, autosave])
 
     const editor = useMemo(
         () => withMyEditor(withReact(createEditor())),
@@ -73,14 +100,8 @@ const MyEditor: React.FC = props => {
 
     return (
         <div
-            onClick={handleClick}> { /* cannot listen to most of the DOM events when 'readOnly' is true, so we have to wrap the <Editable> with <div> */}
-            <Slate editor={editor} value={value} onChange={(value) => {
-                setValue(value)
-                Storage.set({
-                    key: 'content',
-                    value: JSON.stringify(value)
-                })
-            }}>
+            onClick={handleClick}> { /* cannot listen to most of the DOM events when 'readOnly' is true, so we have to wrap the <Editable> with <div> */ }
+            <Slate editor={editor} value={value} onChange={value => setValue(value)}>
                 <Editable
                     renderElement={memoRenderMyElement}
                     placeholder='Place the article here!'
@@ -95,6 +116,6 @@ const MyEditor: React.FC = props => {
             </Slate>
         </div >
     )
-}
+})
 
 export default MyEditor
